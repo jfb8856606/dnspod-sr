@@ -49,6 +49,7 @@ struct rbnode
  struct rbnode *left;
  struct rbnode *right;
  int color;
+ int rsv;
  void *key;
 };
 
@@ -57,6 +58,7 @@ struct rbtree
  struct rbnode *root,nil;
  pthread_mutex_t lock;
  uint size;
+ uint rsv;
  comprbt *c;
  void *argv;
 };

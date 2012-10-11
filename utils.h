@@ -81,6 +81,7 @@ struct ttlnode
 {
  uint exp; //expired time
  ushort dlen; //data len
+ ushort rsv1;
  uchar *data; //
 };
 

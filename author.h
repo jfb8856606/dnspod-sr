@@ -81,6 +81,7 @@ struct author
  int audp, //read and send auth server, private
  cudp, //send to client, share with other author
  idx;
+ int rsv;
  struct server *s;
  pthread_mutex_t lock;//protect list above
  struct qoutinfo *list[LIST_SPACE];
@@ -119,10 +120,12 @@ struct author
 struct fetcher
 {
  int idx;
+ int rsv1;
  struct server *s;
  struct msgcache *mc;
  struct list *el;
  int logfd;
+ int rsv2;
  time_t lastlog;
  uchar databuffer[65536];
  int dataidx;
@@ -131,12 +134,14 @@ struct fetcher
  uint pkg;
  uint send;
  uint miss;
+ int rsv3;
 };
 
 
 struct server
 {
  ushort nquizzer,nfetcher;
+ ushort rsv1[2];
  int ludp,ltcp; //out udp
  struct fetcher *fetchers;
  struct author *authors;
@@ -147,10 +152,12 @@ struct server
  struct htable *qlist; //same domain same type only query once.
  ulong pkg;
  uchar logpath[255];
+ uchar rsv2;
  ulong recordsindb;
  struct rbtree *ttlexp;
  //pthread_mutex_t lock;//protect ttlexp
  uint16_t refreshflag;
+ uint16_t rsv3[3];
  time_t lastrefresh;
 };
 

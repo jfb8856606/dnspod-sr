@@ -55,6 +55,7 @@ struct sockinfo
 {
  struct sockaddr_in addr;
  int fd,buflen,socktype;
+ int rsv1;
  uchar *buf;
 };
 

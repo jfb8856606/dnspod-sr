@@ -44,6 +44,7 @@ typedef int (*noti_chain_callback) (struct event_data*,void*,int);
 struct event_data
 {
  int fd;
+ int rsv1;
  noti_chain_callback cb;
  void *ext;
 };

@@ -46,6 +46,7 @@ struct msgcache
 {
  int head,tail;
  uint size;
+ uint rsv1;
  pthread_mutex_t lock; //protect head and tail
  uchar data[0];
 };
@@ -113,6 +114,7 @@ struct htable
  struct hdata *table;
  uchar *edata;
  uint size,mask,now;
+ uint rsv;
  hashfunc *h;
  comparefunc *c;
 };

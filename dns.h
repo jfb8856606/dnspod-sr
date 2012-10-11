@@ -163,6 +163,7 @@ struct hlpp
  struct rbtree *rbt;
  uchar *buf;
  int datalen;
+ int rsv;
  uchar *dms;
  int dmsidx;
  int section;
@@ -201,8 +202,10 @@ struct hlpc
 struct hlpf
 {
  uint ttl;
+ uint rsv1;
  uchar *hdr;
  ushort type;
+ ushort rsv2[3];
  uchar *from;
  uchar *to;
 };
@@ -215,6 +218,7 @@ struct fillmsg
  uint16_t dclass;
  uint32_t ttl;
  uint16_t len;
+ uint16_t rsv1;
 };
 #pragma pack()
 
@@ -245,10 +249,12 @@ typedef struct tag_dq
 struct baseinfo
 {
  enum rrtype type;
+ enum rrtype rsv1;
  uchar *origindomain;
  int err;
  int dlen;
  ushort id;
+ ushort rsv2[3];
 };
 
 #pragma pack (1)
@@ -257,6 +263,7 @@ struct soa
  uchar *mname;
  uchar *rname;
  uint32_t serial; //201102022222, 12334545
+ uint32_t rsv1;
  uint32_t refresh,retry,expire,minimum;
 };
 #pragma pack ()
@@ -291,6 +298,7 @@ struct qoutinfo
  struct sockinfo *cli; //sock info
  ushort cid,dlen;//include 0
  ushort lables;
+ ushort rsv1;
  //query info
  uchar *qing;
  ushort backid;
@@ -302,11 +310,13 @@ struct qoutinfo
  ushort socktype,stat; //this may be diffefrent from client's socktype
  uchar qbuffer[QBUFFER_SIZE];
  ushort hascname;
+ ushort rsv2[3];
  int tcpfd;
  int tcpnums;
  int mxtry;
  int qns;
  uint stime;
+ uint rsv3;
 };
 
 
