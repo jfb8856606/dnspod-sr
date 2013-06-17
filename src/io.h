@@ -27,51 +27,40 @@
  */
 
 
-//infrastructure memory manager
-//0.red black tree
 
-#ifndef _DATAS_H
-#define _DATAS_H
+//write log
+//write data file
+//read data file
 
-#include "utils.h"
+#ifndef _IO_H
+#define _IO_H
+
+#include "dns.h"
+#include <sys/stat.h>           //read and write files
+#include <sys/types.h>
 
 
-struct rbnode;
-struct entry;
-typedef int (comprbt) (void*,void*,void*);
+int read_config(const uchar *, uchar *, struct htable *);
 
-#define RED (1)
-#define BLACK (0)
 
-struct rbnode
-{
- struct rbnode *parent;
- struct rbnode *left;
- struct rbnode *right;
- int color;
- int rsv;
- void *key;
-};
+#define LOG_INTERVAL (900)
 
-struct rbtree
-{
- struct rbnode *root,nil;
- pthread_mutex_t lock;
- uint size;
- uint rsv;
- comprbt *c;
- void *argv;
+#define TYPE_FETCHER (112)
+#define TYPE_QUIZZER (233)
+
+
+enum {
+    NEVER_EXPIRED1 = 172800,
+    NEVER_EXPIRED2 = 518400,
 };
 
 
-struct rbtree* create_rbtree(comprbt *c,void *argv);
-void* delete_node(struct rbtree *rbt,struct rbnode *nd);
-int insert_node(struct rbtree *rbt,struct rbnode *nd);
-struct rbnode* find_node(struct rbtree *rbt,void *key);
-struct rbnode * min_node(struct rbtree *rbt);
-uint get_rbt_size(struct rbtree *rbt);
-
-//test only.
-int rbtree_test(void);
+//idx and lastlog and logfd
+//first argu
+int create_new_log(uchar * prefix, int idx, int type);
+int write_log(int *, time_t *, int, const uchar *, int,
+              struct sockaddr_in *);
+int read_root(struct htable *, struct rbtree *);
+int refresh_records(struct htable *, struct rbtree *);
 
 #endif

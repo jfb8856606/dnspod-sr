@@ -27,56 +27,49 @@
  */
 
 
-#ifndef _NET_H
-#define _NET_H
+//infrastructure memory manager
+//0.red black tree
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <sys/epoll.h>
+#ifndef _DATAS_H
+#define _DATAS_H
 
 #include "utils.h"
 
-typedef struct sockaddr SA;
 
-#define MAX_TCP_SIZE (2048)
-#define MAX_UDP_SIZE (512)
+struct rbnode;
+struct entry;
+typedef int (comprbt) (void *, void *, void *);
 
-#define TCP (SOCK_STREAM)
-#define UDP (SOCK_DGRAM)
+#define RED (1)
+#define BLACK (0)
 
+struct rbnode {
+    struct rbnode *parent;
+    struct rbnode *left;
+    struct rbnode *right;
+    int color;
+    int rsv;
+    void *key;
+};
 
-#define BACK_EVENT (1000)
-
-
-//the socket information
-//use to identify client and auth server
-struct sockinfo
-{
- struct sockaddr_in addr;
- int fd,buflen,socktype;
- int rsv1;
- uchar *buf;
+struct rbtree {
+    struct rbnode *root, nil;
+    pthread_mutex_t lock;
+    uint size;
+    uint rsv;
+    comprbt *c;
+    void *argv;
 };
 
 
-int create_socket(int,int,uchar*);
+struct rbtree *create_rbtree(comprbt * c, void *argv);
+void *delete_node(struct rbtree *rbt, struct rbnode *nd);
+int insert_node(struct rbtree *rbt, struct rbnode *nd);
+struct rbnode *find_node(struct rbtree *rbt, void *key);
+struct rbnode *min_node(struct rbtree *rbt);
+uint get_rbt_size(struct rbtree *rbt);
 
-int udp_write_info(struct sockinfo*,int);
-int udp_read_msg(struct sockinfo*,int);
-int tcp_write_info(struct sockinfo *ri,int);
-int tcp_read_dns_msg(struct sockinfo *si,uint,int); //len_msg.
-int connect_to(struct sockinfo *);
-
-struct fds* create_fds(int fd,int type);
-int set_time_out(int fd,int sec,int usec);
-int set_non_block(int fd);
-int set_sock_buff(int fd,int m);
-
-int check_client_addr(struct sockaddr_in *);
-int dbg_print_addr(struct sockaddr_in*);
-
-
-int make_bin_from_str(uchar *bin,const uchar *str);
+//test only.
+int rbtree_test(void);
 
 #endif

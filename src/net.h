@@ -27,40 +27,55 @@
  */
 
 
+#ifndef _NET_H
+#define _NET_H
 
-//write log
-//write data file
-//read data file
-
-#ifndef _IO_H
-#define _IO_H
-
-#include "dns.h"
-#include <sys/stat.h> //read and write files
 #include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/epoll.h>
+
+#include "utils.h"
+
+typedef struct sockaddr SA;
+
+#define MAX_TCP_SIZE (2048)
+#define MAX_UDP_SIZE (512)
+
+#define TCP (SOCK_STREAM)
+#define UDP (SOCK_DGRAM)
 
 
-int read_config(uchar *,struct htable*);
+#define BACK_EVENT (1000)
 
 
-#define LOG_INTERVAL (900)
-
-#define TYPE_FETCHER (112)
-#define TYPE_QUIZZER (233)
-
-
-enum
-{
- NEVER_EXPIRED1 = 172800,
- NEVER_EXPIRED2 = 518400,
+//the socket information
+//use to identify client and auth server
+struct sockinfo {
+    struct sockaddr_in addr;
+    int fd, buflen, socktype;
+    int rsv1;
+    uchar *buf;
 };
 
 
-//idx and lastlog and logfd
-//first argu
-int create_new_log(uchar *prefix,int idx,int type);
-int write_log(int*,time_t*,int,const uchar*,int,struct sockaddr_in*);
-int read_root(struct htable *,struct rbtree*);
-int refresh_records(struct htable*,struct rbtree*);
+int create_socket(int, int, uchar *);
+
+int udp_write_info(struct sockinfo *, int);
+int udp_read_msg(struct sockinfo *, int);
+int tcp_write_info(struct sockinfo *ri, int);
+int tcp_read_dns_msg(struct sockinfo *si, uint, int);   //len_msg.
+int connect_to(struct sockinfo *);
+
+struct fds *create_fds(int fd, int type);
+int set_time_out(int fd, int sec, int usec);
+int set_non_block(int fd);
+int set_sock_buff(int fd, int m);
+
+int check_client_addr(struct sockaddr_in *);
+int dbg_print_addr(struct sockaddr_in *);
+
+
+int make_bin_from_str(uchar * bin, const uchar * str);
 
 #endif
